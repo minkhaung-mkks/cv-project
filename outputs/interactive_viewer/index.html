@@ -32,9 +32,23 @@
         <section class="model-picker" aria-label="Model selection">
           <label for="model-select">Model</label>
           <select id="model-select">
-            <option value="/models/final_clean_model.ply">Final cleaned fish</option>
-            <option value="/models/normal_top_model.ply">Video and upper-photo model</option>
-            <option value="/models/normal_video_model.ply">Video-only model</option>
+            <optgroup label="Final September models">
+              <option value="/models/final_clean_model.ply">Final cleaned fish</option>
+              <option value="/models/normal_top_model.ply">Video and upper-photo model</option>
+              <option value="/models/normal_video_model.ply">Video-only model</option>
+            </optgroup>
+            <optgroup label="Earlier models">
+              <option value="/models/earlier/turntable_final.ply">Earlier turntable model</option>
+              <option value="/models/earlier/early_improved.ply">Earlier improved model</option>
+              <option value="/models/earlier/early_v3.ply">Earlier v3 model</option>
+              <option value="/models/earlier/early_v2.ply">Earlier v2 model</option>
+            </optgroup>
+            <optgroup label="First handheld attempts">
+              <option value="/models/v0.1/gaussian_models/fish_arc_splats.ply">Handheld fish arc</option>
+              <option value="/models/v0.1/gaussian_models/fish_v7_splats.ply">Handheld fish v7</option>
+              <option value="/models/v0.1/gaussian_models/real_v5_splats.ply">Handheld real v5</option>
+              <option value="/models/v0.1/gaussian_models/real_v3_splats.ply">Handheld real v3</option>
+            </optgroup>
           </select>
         </section>
 
@@ -44,12 +58,12 @@
             <button id="hide-help" type="button" aria-label="Hide controls">×</button>
           </div>
           <div class="key-grid">
-            <div class="key-row"><kbd>W</kbd><span>Rotate up</span></div>
-            <div class="key-row"><kbd>A</kbd><span>Rotate left</span></div>
-            <div class="key-row"><kbd>S</kbd><span>Rotate down</span></div>
-            <div class="key-row"><kbd>D</kbd><span>Rotate right</span></div>
-            <div class="key-row"><kbd>Q</kbd><span>Tilt left</span></div>
-            <div class="key-row"><kbd>E</kbd><span>Tilt right</span></div>
+            <div class="key-row"><kbd>W</kbd><span>Orbit up</span></div>
+            <div class="key-row"><kbd>A</kbd><span>Orbit left</span></div>
+            <div class="key-row"><kbd>S</kbd><span>Orbit down</span></div>
+            <div class="key-row"><kbd>D</kbd><span>Orbit right</span></div>
+            <div class="key-row"><kbd>Q</kbd><span>Roll left</span></div>
+            <div class="key-row"><kbd>E</kbd><span>Roll right</span></div>
             <div class="key-row"><kbd>Z</kbd><span>Zoom out</span></div>
             <div class="key-row"><kbd>X</kbd><span>Zoom in</span></div>
           </div>

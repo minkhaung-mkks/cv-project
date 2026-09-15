@@ -19,6 +19,8 @@ let viewer;
 let objectUrl;
 let autoRotate = true;
 let loaded = false;
+let homeDistance = 6;
+const orbitCenter = new THREE.Vector3();
 const pressed = new Set();
 
 function createViewer() {
@@ -69,8 +71,9 @@ async function loadModel(source, label, format) {
     });
     viewer.start();
     viewer.controls.autoRotate = false;
-    viewer.controls.enableDamping = true;
-    viewer.controls.dampingFactor = 0.08;
+    viewer.controls.enableDamping = false;
+    viewer.controls.enablePan = false;
+    frameModel();
     modelName.textContent = label || cleanName(source);
     loaded = true;
     loading.classList.add('hidden');
@@ -81,43 +84,79 @@ async function loadModel(source, label, format) {
   }
 }
 
+function frameModel() {
+  const mesh = viewer?.getSplatMesh();
+  if (!mesh || !viewer?.camera || !viewer?.controls) return;
+
+  const bounds = new THREE.Box3();
+  const point = new THREE.Vector3();
+  const count = mesh.getSplatCount();
+  for (let index = 0; index < count; index += 1) {
+    mesh.getSplatCenter(index, point);
+    bounds.expandByPoint(point);
+  }
+
+  if (bounds.isEmpty()) orbitCenter.set(0, 0, 0);
+  else bounds.getCenter(orbitCenter);
+
+  const radius = bounds.isEmpty() ? 2.5 : bounds.getSize(point).length() * 0.5;
+  homeDistance = Math.max(0.5, radius * 2.4);
+  resetView();
+}
+
 function orbit(horizontal, vertical) {
   if (!viewer?.camera || !viewer?.controls) return;
   const camera = viewer.camera;
-  const target = viewer.controls.target;
+  const target = orbitCenter;
   const offset = camera.position.clone().sub(target);
-  const spherical = new THREE.Spherical().setFromVector3(offset);
-  spherical.theta += horizontal;
-  spherical.phi = Math.max(0.08, Math.min(Math.PI - 0.08, spherical.phi + vertical));
-  camera.position.copy(target).add(new THREE.Vector3().setFromSpherical(spherical));
-  camera.lookAt(target);
-  viewer.controls.update();
-}
+  const rotation = new THREE.Quaternion();
 
-function zoom(multiplier) {
-  if (!viewer?.camera || !viewer?.controls) return;
-  const target = viewer.controls.target;
-  const offset = viewer.camera.position.clone().sub(target).multiplyScalar(multiplier);
-  const distance = Math.max(0.2, Math.min(20, offset.length()));
-  offset.setLength(distance);
-  viewer.camera.position.copy(target).add(offset);
+  if (horizontal) {
+    rotation.setFromAxisAngle(camera.up.clone().normalize(), horizontal);
+    offset.applyQuaternion(rotation);
+  }
+
+  if (vertical) {
+    const viewDirection = offset.clone().negate().normalize();
+    const screenRight = viewDirection.cross(camera.up).normalize();
+    rotation.setFromAxisAngle(screenRight, vertical);
+    offset.applyQuaternion(rotation);
+    camera.up.applyQuaternion(rotation).normalize();
+  }
+
+  camera.position.copy(target).add(offset);
+  viewer.controls.target.copy(target);
+  camera.lookAt(target);
   viewer.controls.update();
 }
 
 function roll(angle) {
   if (!viewer?.camera || !viewer?.controls) return;
-  const viewAxis = viewer.controls.target.clone().sub(viewer.camera.position).normalize();
-  viewer.camera.up.applyAxisAngle(viewAxis, angle).normalize();
-  viewer.camera.lookAt(viewer.controls.target);
+  const viewDirection = orbitCenter.clone().sub(viewer.camera.position).normalize();
+  viewer.camera.up.applyAxisAngle(viewDirection, angle).normalize();
+  viewer.controls.target.copy(orbitCenter);
+  viewer.camera.lookAt(orbitCenter);
+  viewer.controls.update();
+}
+
+function zoom(multiplier) {
+  if (!viewer?.camera || !viewer?.controls) return;
+  const target = orbitCenter;
+  const offset = viewer.camera.position.clone().sub(target).multiplyScalar(multiplier);
+  const distance = Math.max(homeDistance * 0.08, Math.min(homeDistance * 8, offset.length()));
+  offset.setLength(distance);
+  viewer.camera.position.copy(target).add(offset);
+  viewer.controls.target.copy(target);
+  viewer.camera.lookAt(target);
   viewer.controls.update();
 }
 
 function resetView() {
   if (!viewer?.camera || !viewer?.controls) return;
-  viewer.controls.target.set(0, 0, 0);
-  viewer.camera.position.set(0, 0, 6);
+  viewer.controls.target.copy(orbitCenter);
+  viewer.camera.position.copy(orbitCenter).add(new THREE.Vector3(0, 0, homeDistance));
   viewer.camera.up.set(0, 1, 0);
-  viewer.camera.lookAt(0, 0, 0);
+  viewer.camera.lookAt(orbitCenter);
   viewer.controls.update();
 }
 
@@ -142,8 +181,8 @@ function animate() {
     if (pressed.has('KeyD') || pressed.has('ArrowRight')) orbit(step, 0);
     if (pressed.has('KeyW') || pressed.has('ArrowUp')) orbit(0, -step);
     if (pressed.has('KeyS') || pressed.has('ArrowDown')) orbit(0, step);
-    if (pressed.has('KeyQ')) roll(-0.018);
-    if (pressed.has('KeyE')) roll(0.018);
+    if (pressed.has('KeyQ')) roll(-step);
+    if (pressed.has('KeyE')) roll(step);
     if (pressed.has('KeyZ')) zoom(1.018);
     if (pressed.has('KeyX')) zoom(0.982);
   }

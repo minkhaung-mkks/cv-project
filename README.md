@@ -8,8 +8,8 @@
 
 ```text
 final_submission/
-├── source/                 local original recordings, ignored by Git
-├── masks/                  local scratch masks, ignored by Git
+├── source/                 local recordings and extracted frames, ignored by Git
+├── masks/                  masks from each capture stage, ignored by Git
 ├── work/latest/            submitted images, labels, masks, cameras, and training data
 ├── outputs/
 │   ├── models/             Gaussian-splat PLY models
@@ -22,7 +22,11 @@ final_submission/
 
 ## Download the masks and models
 
-The masks, prepared work files, and model outputs are stored in the shared [Google Drive folder](https://drive.google.com/drive/folders/1GYrtH-BxeDGc33KMJ6MtSCnZFXVQv48m?usp=sharing). Download the `masks`, `work`, and `outputs` folders and merge them into the matching folders in this repository.
+The masks, prepared work files, and model outputs are stored in the shared [Google Drive folder](https://drive.google.com/drive/folders/1GYrtH-BxeDGc33KMJ6MtSCnZFXVQv48m?usp=sharing). Download the folders and merge them into the matching folders in this repository.
+
+The local `source` folder is arranged as `First source`, `2nd turntable`, `office_photos`, and `Latest source`. Each group contains its extracted frames. The first group also contains its original video. The original videos for the second turntable and latest capture were no longer present in the local project when this package was assembled, so each affected folder includes a note recording that limitation.
+
+The local `masks` folder contains the corresponding `first_source`, `second_turntable`, `latest_video`, and `latest_final` sets. These files remain ignored by Git so they can be downloaded or regenerated without increasing the repository size.
 
 ## View the final model
 
@@ -50,6 +54,10 @@ The masks and prepared training data under `work/latest` are the reviewed final 
 - `outputs/models/final_clean_model.ply` is the cleaned final presentation model.
 - `outputs/models/normal_top_model.ply` is the model trained with video and upper photographs before cleanup.
 - `outputs/models/normal_video_model.ply` is the two-video model before the upper-photo continuation.
+- `outputs/models/earlier/` contains representative models from the earlier v2, v3, improved, and first turntable runs.
+- `outputs/models/custom_souvenir/` contains the early models made with our custom Gaussian reconstruction code.
+- `outputs/models/v0.1/gaussian_models/` contains the first handheld Gaussian models in their original NPZ format and converted viewer-ready formats.
+- `outputs/models/v0.1/hull_models/` contains the coloured hull point clouds, while `model_data/` contains their editable NPZ data.
 - `outputs/videos/final_side_360.mp4` is the final level rotation.
 - `outputs/videos/final_upper_360.mp4` is the final elevated rotation.
 
