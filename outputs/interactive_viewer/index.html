@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#071316" />
+    <title>Fish Model Viewer</title>
+    <meta name="description" content="A keyboard-first viewer for Gaussian splat fish models." />
+  </head>
+  <body>
+    <div id="app">
+      <main id="stage" aria-label="3D fish model viewer">
+        <div id="viewer"></div>
+        <div id="drop-zone">
+          <p>Drop a .ply or .splat file here</p>
+        </div>
+
+        <header class="topbar">
+          <div class="brand">
+            <span class="brand-mark" aria-hidden="true"></span>
+            <div>
+              <h1>Fish viewer</h1>
+              <p id="model-name">Loading model...</p>
+            </div>
+          </div>
+          <div class="top-actions">
+            <button id="open-file" class="button secondary" type="button">Open model</button>
+            <button id="fullscreen" class="icon-button" type="button" aria-label="Enter fullscreen" title="Fullscreen">⛶</button>
+          </div>
+        </header>
+
+        <section class="model-picker" aria-label="Model selection">
+          <label for="model-select">Model</label>
+          <select id="model-select">
+            <option value="/models/final_clean_model.ply">Final cleaned fish</option>
+            <option value="/models/normal_top_model.ply">Video and upper-photo model</option>
+            <option value="/models/normal_video_model.ply">Video-only model</option>
+          </select>
+        </section>
+
+        <aside class="controls" aria-label="Viewer controls">
+          <div class="control-header">
+            <span>Controls</span>
+            <button id="hide-help" type="button" aria-label="Hide controls">×</button>
+          </div>
+          <div class="key-grid">
+            <div class="key-row"><kbd>W</kbd><span>Rotate up</span></div>
+            <div class="key-row"><kbd>A</kbd><span>Rotate left</span></div>
+            <div class="key-row"><kbd>S</kbd><span>Rotate down</span></div>
+            <div class="key-row"><kbd>D</kbd><span>Rotate right</span></div>
+            <div class="key-row"><kbd>Q</kbd><span>Tilt left</span></div>
+            <div class="key-row"><kbd>E</kbd><span>Tilt right</span></div>
+            <div class="key-row"><kbd>Z</kbd><span>Zoom out</span></div>
+            <div class="key-row"><kbd>X</kbd><span>Zoom in</span></div>
+          </div>
+          <div class="control-footer">
+            <div><kbd class="wide">Space</kbd><span>Auto-rotate</span></div>
+            <div><kbd>R</kbd><span>Reset view</span></div>
+          </div>
+        </aside>
+
+        <div class="bottom-bar">
+          <button id="play" class="play-button" type="button" aria-label="Pause auto-rotation">
+            <span id="play-icon">Ⅱ</span>
+          </button>
+          <div class="rotation-state">
+            <span id="state-dot" class="state-dot"></span>
+            <div><strong id="state-label">Auto-rotating</strong><small>Space to pause</small></div>
+          </div>
+          <button id="reset" class="button secondary" type="button">Reset view <kbd>R</kbd></button>
+        </div>
+
+        <div id="loading" class="loading" role="status">
+          <div class="loader"></div>
+          <strong>Loading fish</strong>
+          <span id="loading-detail">Preparing splats...</span>
+        </div>
+        <div id="error" class="error" role="alert" hidden></div>
+        <input id="file-input" type="file" accept=".ply,.splat,.ksplat,.spz" hidden />
+      </main>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

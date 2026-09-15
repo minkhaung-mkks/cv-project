@@ -1,0 +1,7 @@
+{
+  "steps": 2000,
+  "resolution": 512,
+  "export_every": 500,
+  "eval_every": 500,
+  "max_splats": 50000
+}
